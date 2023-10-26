@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "api_flora", "flora_api\api_flora.csproj", "{BB481DB2-1A3A-4053-B6B9-EBD7F8201252}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{BB481DB2-1A3A-4053-B6B9-EBD7F8201252}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BB481DB2-1A3A-4053-B6B9-EBD7F8201252}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BB481DB2-1A3A-4053-B6B9-EBD7F8201252}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BB481DB2-1A3A-4053-B6B9-EBD7F8201252}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
