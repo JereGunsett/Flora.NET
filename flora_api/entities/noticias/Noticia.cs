@@ -1,4 +1,4 @@
-﻿5namespace api_flora.entities.noticias;
+﻿namespace api_flora.Entities.noticias;
 
 public class Noticia
 {
@@ -8,8 +8,8 @@ public class Noticia
 	private List<string> imagenes;
 	private List<string> hipervinculos;
 
-	public long Id { 
-
+	public long Id 
+	{ 
 		get { return id; }
 		set { id = value; }
 	}

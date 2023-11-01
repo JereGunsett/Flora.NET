@@ -1,69 +1,50 @@
-using api_flora.entities.categorias;
-namespace api_flora.entities.productos;
+using api_flora.Entities.categorias;
 
-public class Producto
+namespace api_flora.Entities.productos
 {
-    private long id;
-    private String nombre;
-    private int precio;
-    private int cantidad;
-    private String description;
-    private Categoria categoria;
+    public class Producto
+    {
+        private long id;
+        private String nombre;
+        private int precio;
+        private int cantidad;
+        private String description;
+        private Categoria categoria;
 
 
-    public long Id
-    {
-        get
+        public long Id
         {
-            return this.id;
+            get { return this.id; }
+            set { this.id = value; }
         }
-        set
+
+        public String Nombre
         {
-            this.id = value;
+            get { return this.nombre; }
+            set { this.nombre = value; }
         }
-    }
-    public String Nombre
-    {
-        get
+
+        public int Precio
         {
-            return this.nombre;
+            get { return this.precio; }
+            set { this.precio = value; }
         }
-        set
+
+        public int Cantidad
         {
-            this.nombre = value;
+            get { return this.cantidad; }
+            set { this.cantidad = value; }
         }
-    }
-    public int Precio
-    {
-        get
+
+        public String Descripcion
         {
-            return this.precio;
+            get { return this.description; }
+            set { this.description = value; }
         }
-        set
+        public Categoria Categoria
         {
-            this.precio = value;
+            get { return this.categoria; }
+            set { this.categoria = value; }
         }
-    }
-    public int Cantidad
-    {
-        get
-        {
-            return this.cantidad;
-        }
-        set
-        {
-            this.cantidad = value;
-        }
-    }
-    public String Descripcion
-    {
-        get { return this.description; }
-        set { this.description = value; }
-    }
-    public Categoria Categoria
-    {
-        get { return this.categoria; }
-        set { this.categoria = value; }
     }
 }
-

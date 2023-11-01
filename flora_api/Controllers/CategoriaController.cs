@@ -1,4 +1,6 @@
-using api_flora.entities.categorias;
+using api_flora.Entities.categorias;
+using api_flora.Data;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
 
 
@@ -6,45 +8,89 @@ namespace api_flora.Controllers
 {
     [ApiController]
     [Route("[controller]")]
+
     public class CategoriaController : ControllerBase
     {
-        private static List<Categoria> categorias = new List<Categoria>();
+        private readonly DataContext dataContext; //Contexto de Datos
 
+        public CategoriaController(DataContext dataContext) //Constructor para inyectar el contexto de datos
+        {
+            this.dataContext = dataContext;
+        }
+
+        //Metodo GET para obtener todas las categorias
         [HttpGet]
         public IEnumerable<Categoria> Get()
         {
-            return categorias;
+            return this.dataContext.Categorias.ToList();
         }
 
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Categoria>> Get(long id)
+        {
+            var categoria = await this.dataContext.Categorias.FindAsync(id);
+
+            if (categoria == null)
+            {
+                return NotFound("La categoria no existe");
+            }
+            return categoria;
+        }
+
+
+        //Metodo POST para agregar una nueva categoria
         [HttpPost]
-        public ActionResult Post(Categoria categoria)
+        public async Task<ActionResult<Categoria>> Post([FromBody]Categoria categoria)
         {
-            categorias.Add(categoria);
-            return Ok();
+            if (this.dataContext != null && this.dataContext.Categorias != null)
+            {
+                await this.dataContext.Categorias.AddAsync(categoria);
+                await this.dataContext.SaveChangesAsync();
+            }
+            return Ok(categoria);
         }
 
+        //Metodo PUT que actualiza los parametros de una categoria a traves de su id
         [HttpPut("{id}")]
-        public ActionResult Put(long id, Categoria categoria)
+        public async Task<IActionResult> Put(long id, Categoria categoria)
         {
-            var index = categorias.FindIndex(c => c.Id == id);
-            if (index < 0)
+            if (id != categoria.Id)
+            {
+                return BadRequest();
+            }
+
+            var existingCategoria = await this.dataContext.Categorias.FindAsync(id);
+
+            if (existingCategoria == null)
             {
                 return NotFound();
             }
-            categorias[index] = categoria;
-            return Ok();
+
+            existingCategoria.Nombre = categoria.Nombre;
+            existingCategoria.Descripcion = categoria.Descripcion;
+            existingCategoria.Imagen = categoria.Imagen;
+
+            this.dataContext.Categorias.Update(existingCategoria);
+
+            await this.dataContext.SaveChangesAsync();
+
+            return NoContent();
         }
 
+        //Metodo DELETE que elimina una categoria a travez de su id
         [HttpDelete("{id}")]
-        public ActionResult Delete(long id)
+        public async Task<IActionResult> Delete(long id)
         {
-            var index = categorias.FindIndex(c => c.Id == id);
-            if (index < 0)
+            var existingCategoria = await this.dataContext.Categorias.FindAsync(id);
+            if (existingCategoria == null)
             {
                 return NotFound();
             }
-            categorias.RemoveAt(index);
-            return Ok();
+            this.dataContext.Categorias.Remove(existingCategoria);
+
+            await this.dataContext.SaveChangesAsync();
+
+            return NoContent();
         }
     }
 }

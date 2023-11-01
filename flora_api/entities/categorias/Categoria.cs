@@ -1,4 +1,4 @@
-namespace api_flora.entities.categorias;
+namespace api_flora.Entities.categorias;
 
 public class Categoria
 {
@@ -8,15 +8,9 @@ public class Categoria
     private string imagen;
 
     public long Id
-    {
-        get
-        {
-            return this.id;
-        }
-        set
-        {
-            this.id = value;
-        }
+    {   
+        get { return this.id; }
+        set { this.id = value; }
     }
     public string Nombre
     {
