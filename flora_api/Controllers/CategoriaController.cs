@@ -1,4 +1,4 @@
-using api_flora.Entities.categorias;
+using api_flora.Entities.Categorias;
 using api_flora.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;

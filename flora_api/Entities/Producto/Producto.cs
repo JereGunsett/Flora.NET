@@ -1,6 +1,6 @@
-using api_flora.Entities.categorias;
+using api_flora.Entities.Categorias;
 
-namespace api_flora.Entities.productos
+namespace api_flora.Entities.Producto
 {
     public class Producto
     {

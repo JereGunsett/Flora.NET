@@ -1,9 +1,7 @@
-using api_flora.Entities.productos;
+using api_flora.Entities.Producto;
 using api_flora.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
-
-
 
 
 namespace api_flora.Controllers

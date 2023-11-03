@@ -1,6 +1,8 @@
 using Microsoft.EntityFrameworkCore;
-using api_flora.Entities.productos;
-using api_flora.Entities.categorias;
+using api_flora.Entities.Producto;
+using api_flora.Entities.Categorias;
+using api_flora.Entities.Noticia;
+using api_flora.Entities.Contacto;
 
 namespace api_flora.Data
 {
@@ -14,5 +16,9 @@ namespace api_flora.Data
         public DbSet<Producto>? Productos { get; set; }
 
         public DbSet<Categoria>? Categorias { get; set; }
+
+        public DbSet<Noticia>? Noticias { get; set; }
+
+        public DbSet<Contacto>? Contactos { get; set; }
     }
 }
