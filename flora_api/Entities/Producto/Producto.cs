@@ -4,12 +4,12 @@ namespace api_flora.Entities.Producto
 {
     public class Producto
     {
-        private long id;
-        private String nombre;
-        private int precio;
-        private int cantidad;
-        private String description;
-        private Categoria categoria;
+        private long id = 0;
+        private String nombre = "";
+        private double precio = 0;
+        private int cantidad = 0;
+        private String description = "";
+        private Categoria? categoria;
 
 
         public long Id
@@ -24,7 +24,7 @@ namespace api_flora.Entities.Producto
             set { this.nombre = value; }
         }
 
-        public int Precio
+        public double Precio
         {
             get { return this.precio; }
             set { this.precio = value; }
@@ -41,7 +41,7 @@ namespace api_flora.Entities.Producto
             get { return this.description; }
             set { this.description = value; }
         }
-        public Categoria Categoria
+        public Categoria? Categoria
         {
             get { return this.categoria; }
             set { this.categoria = value; }

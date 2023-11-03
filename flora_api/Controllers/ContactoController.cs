@@ -2,6 +2,7 @@
 using api_flora.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
+using System.Diagnostics.CodeAnalysis;
 
 namespace api_flora.Controllers
 {
@@ -10,6 +11,7 @@ namespace api_flora.Controllers
 
     public class ContactoController : ControllerBase
     {
+        [NotNull]
         private readonly DataContext dataContext;
 
         public ContactoController(DataContext dataContext)
@@ -20,12 +22,10 @@ namespace api_flora.Controllers
         [HttpPost]
         public async Task<ActionResult<Contacto>> PostContacto([FromBody] Contacto contacto)
         {
-            if (this.dataContext != null && this.dataContext.Contactos != null)
-            {
-                contacto.Fecha = DateTime.Now; // Establece la fecha actual
-                await this.dataContext.Contactos.AddAsync(contacto);
-                await this.dataContext.SaveChangesAsync();
-            }
+            contacto.Fecha = DateTime.Now; // Establece la fecha actual
+            await this.dataContext.Contactos.AddAsync(contacto);
+            await this.dataContext.SaveChangesAsync();
+            
             return Ok(contacto);
         }
     }

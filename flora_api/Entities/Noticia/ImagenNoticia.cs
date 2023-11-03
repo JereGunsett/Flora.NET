@@ -3,7 +3,7 @@
     public class ImagenNoticia
     {
         private long id;
-        private string str;
+        private string str = "";
 
         public long Id
         {

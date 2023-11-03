@@ -4,10 +4,10 @@ namespace api_flora.Entities.Noticia
     public class Noticia
     {
         private long id;
-        private string titulo;
-        private string cuerpo;
-        private List<ImagenNoticia> imagenes;
-        private List<HipervinculoNoticia> hipervinculos;
+        private string titulo = "";
+        private string cuerpo = "";
+        private List<ImagenNoticia>? imagenes;
+        private List<HipervinculoNoticia>? hipervinculos;
 
         public long Id
         {
@@ -24,12 +24,12 @@ namespace api_flora.Entities.Noticia
             get { return this.cuerpo; }
             set { this.cuerpo = value; }
         }
-        public List<ImagenNoticia> Imagenes
+        public List<ImagenNoticia>? Imagenes
         {
             get { return this.imagenes; }
             set { this.imagenes = value; }
         }
-        public List<HipervinculoNoticia> Hipervinculos
+        public List<HipervinculoNoticia>? Hipervinculos
         {
             get { return this.hipervinculos; }
             set { this.hipervinculos = value; }

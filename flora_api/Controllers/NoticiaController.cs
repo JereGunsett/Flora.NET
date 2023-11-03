@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using api_flora.Entities.Noticia;
 using api_flora.Data;
+using System.Diagnostics.CodeAnalysis;
 
 
 namespace api_flora.Controllers
@@ -11,6 +12,7 @@ namespace api_flora.Controllers
 
     public class NoticiaController : ControllerBase
     {
+        [NotNull]
         private readonly DataContext dataContext;
 
         public NoticiaController(DataContext dataContext)
@@ -19,9 +21,9 @@ namespace api_flora.Controllers
         }
 
         [HttpGet]
-        public IEnumerable<Noticia> GetNoticias()
+        public async Task<ActionResult<List<Noticia>>> GetNoticias()
         {
-            return this.dataContext.Noticias.ToList();
+            return Ok(await this.dataContext.Noticias.ToListAsync());
         }
 
         [HttpGet("{id}")]
@@ -40,11 +42,9 @@ namespace api_flora.Controllers
         [HttpPost]
         public async Task<ActionResult<Noticia>> Post([FromBody] Noticia noticia)
         {
-            if (this.dataContext.Noticias != null && this.dataContext != null)
-            {
-                await this.dataContext.Noticias.AddAsync(noticia);
-                await this.dataContext.SaveChangesAsync();
-            }
+            await this.dataContext.Noticias.AddAsync(noticia);
+            await this.dataContext.SaveChangesAsync();
+            
             return Ok(noticia);
         }
 

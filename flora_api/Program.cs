@@ -12,19 +12,27 @@ builder.Services.AddSwaggerGen();
 
 var allowedOrigins = builder.Configuration.GetSection("AllowedOrigins").Get<string[]>();
 
-builder.Services.AddCors(options => {
-    options.AddPolicy("api-cors", policy => {
-        policy.WithOrigins(allowedOrigins)
-            .AllowAnyHeader()
-            .AllowAnyMethod();
+if(allowedOrigins != null)
+{
+    builder.Services.AddCors(options => {
+        options.AddPolicy("api-cors", policy => {
+            policy.WithOrigins(allowedOrigins)
+                .AllowAnyHeader()
+                .AllowAnyMethod();
+        });
     });
-});
+}
 
-builder.Services.AddDbContext<DataContext>(options => {
-    options.UseMySQL(
-        builder.Configuration.GetConnectionString("DefaultConnection")
-    );
-});
+string? connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+
+if(!string.IsNullOrEmpty(connectionString))
+{
+    builder.Services.AddDbContext<DataContext>(options => {
+        options.UseMySQL(
+            connectionString
+        );
+    });
+}
 
 var app = builder.Build();
 

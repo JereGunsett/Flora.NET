@@ -2,6 +2,7 @@ using api_flora.Entities.Producto;
 using api_flora.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
+using System.Diagnostics.CodeAnalysis;
 
 
 namespace api_flora.Controllers
@@ -11,6 +12,7 @@ namespace api_flora.Controllers
 
     public class ProductoController : ControllerBase
     {
+        [NotNull]
         private readonly DataContext dataContext; //Contexto de Datos
 
         //Constructor para inyectar el contexto de datos
@@ -21,9 +23,9 @@ namespace api_flora.Controllers
 
         //Metodo GET para obtener todos los productos
         [HttpGet]
-        public IEnumerable<Producto> Get()
+        public async Task<ActionResult<List<Producto>>> Get()
         {
-            return this.dataContext.Productos.ToList(); // Retorna la lista de productos desde el contexto de datos
+            return Ok(await this.dataContext.Productos.ToListAsync()); // Retorna la lista de productos desde el contexto de datos
         }
 
         //Metodo GET para obtener un producto por su ID
@@ -42,16 +44,13 @@ namespace api_flora.Controllers
         [HttpPost]
         public async Task<ActionResult<Producto>> Post([FromBody] Producto producto)
         {
-            if (this.dataContext != null && this.dataContext.Productos != null) //Verifica si el contexto y la colección de productos no son nulos
-            {
-                await this.dataContext.Productos.AddAsync(producto); //Agrega el producto al contexto de la base de datos
-                await this.dataContext.SaveChangesAsync(); //Guarda los cambios en la base de datos
-            }
-
+            await this.dataContext.Productos.AddAsync(producto); //Agrega el producto al contexto de la base de datos
+            await this.dataContext.SaveChangesAsync(); //Guarda los cambios en la base de datos
+            
             return Ok(producto); //Retorna el producto agregado
         }
 
-        //Método PUT para actualizar un producto existente por su ID
+        //Mï¿½todo PUT para actualizar un producto existente por su ID
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(long id, Producto producto)
         {
@@ -64,7 +63,7 @@ namespace api_flora.Controllers
 
             //Busca dde manera asicronica un producto existente por su ID en el contexto de la base de datos
             var existingProduct = await this.dataContext.Productos.FindAsync(id);
-            //Si no se encuentra ningún producto con el ID proporcionado, devuelve un resultado NotFound
+            //Si no se encuentra ningï¿½n producto con el ID proporcionado, devuelve un resultado NotFound
             if (existingProduct == null)
             {
                 return NotFound();
@@ -79,14 +78,14 @@ namespace api_flora.Controllers
             
             //Marca el producto existente como modificado en el contexto de la base de datos
             this.dataContext.Productos.Update(existingProduct);
-            //Guarda los cambios asincrónicamente en la base de datos
+            //Guarda los cambios asincrï¿½nicamente en la base de datos
             await this.dataContext.SaveChangesAsync();
 
             //Retorna un resultado sin contenido si la actualizacion se realizo correctamente
             return NoContent();
         }
 
-        //Método DELETE para eliminar un producto por su ID
+        //Mï¿½todo DELETE para eliminar un producto por su ID
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(long id)
         {

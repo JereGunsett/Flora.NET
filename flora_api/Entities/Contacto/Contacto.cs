@@ -2,11 +2,11 @@
 {
     public class Contacto
     {
-        private long id;
-        private string nombre;
-        private string email;
-        private string descripcion;
-        private DateTime fecha;
+        private long id = 0;
+        private string nombre = "";
+        private string email = "";
+        private string descripcion = "";
+        private DateTime? fecha;
 
 
         public long Id
@@ -29,7 +29,7 @@
             get { return this.descripcion; }
             set { this.descripcion = value; }
         }
-        public DateTime Fecha
+        public DateTime? Fecha
         {
             get { return this.fecha; }
             set { this.fecha = value; }

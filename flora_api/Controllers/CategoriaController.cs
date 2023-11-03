@@ -2,6 +2,7 @@ using api_flora.Entities.Categorias;
 using api_flora.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
+using System.Diagnostics.CodeAnalysis;
 
 
 namespace api_flora.Controllers
@@ -11,6 +12,7 @@ namespace api_flora.Controllers
 
     public class CategoriaController : ControllerBase
     {
+        [NotNull]
         private readonly DataContext dataContext; //Contexto de Datos
 
         public CategoriaController(DataContext dataContext) //Constructor para inyectar el contexto de datos
@@ -34,6 +36,7 @@ namespace api_flora.Controllers
             {
                 return NotFound("La categoria no existe");
             }
+
             return categoria;
         }
 
@@ -42,11 +45,9 @@ namespace api_flora.Controllers
         [HttpPost]
         public async Task<ActionResult<Categoria>> Post([FromBody]Categoria categoria)
         {
-            if (this.dataContext != null && this.dataContext.Categorias != null)
-            {
-                await this.dataContext.Categorias.AddAsync(categoria);
-                await this.dataContext.SaveChangesAsync();
-            }
+            await this.dataContext.Categorias.AddAsync(categoria);
+            await this.dataContext.SaveChangesAsync();
+            
             return Ok(categoria);
         }
 

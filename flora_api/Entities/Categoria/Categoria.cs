@@ -2,10 +2,10 @@ namespace api_flora.Entities.Categorias
 {
     public class Categoria
     {
-        private long id;
-        private string nombre;
-        private string descripcion;
-        private string imagen;
+        private long id = 0;
+        private string nombre = "";
+        private string descripcion = "";
+        private string imagen = "";
 
         public long Id
         {
