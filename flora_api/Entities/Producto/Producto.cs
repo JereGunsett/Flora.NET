@@ -10,6 +10,7 @@ namespace api_flora.Entities.Producto
         private int cantidad = 0;
         private String description = "";
         private Categoria? categoria;
+        private String imagen = "";
 
 
         public long Id
@@ -45,6 +46,11 @@ namespace api_flora.Entities.Producto
         {
             get { return this.categoria; }
             set { this.categoria = value; }
+        }
+        public String Imagen
+        {
+            get { return this.imagen; }
+            set { this.imagen = value; }
         }
     }
 }

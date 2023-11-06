@@ -75,6 +75,7 @@ namespace api_flora.Controllers
             existingProduct.Cantidad = producto.Cantidad;
             existingProduct.Descripcion = producto.Descripcion;
             existingProduct.Categoria = producto.Categoria;
+            existingProduct.Imagen = producto.Imagen;
             
             //Marca el producto existente como modificado en el contexto de la base de datos
             this.dataContext.Productos.Update(existingProduct);
