@@ -1,8 +1,13 @@
 using api_flora.Entities.Producto;
 using api_flora.Data;
+using api_flora.DTO.Producto;
+using api_flora.DTO;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Linq.Dynamic.Core;
 
 
 namespace api_flora.Controllers
@@ -23,9 +28,53 @@ namespace api_flora.Controllers
 
         //Metodo GET para obtener todos los productos
         [HttpGet]
-        public async Task<ActionResult<List<Producto>>> Get()
+        public async Task<ActionResult<List<DTOProducto>>> Get([FromQuery] DTOListRequest request)
         {
-            return Ok(await this.dataContext.Productos.ToListAsync()); // Retorna la lista de productos desde el contexto de datos
+            var query = this.dataContext.Productos.AsQueryable();
+
+            if (!string.IsNullOrEmpty(request.Query))
+            {
+                query = query.Where(producto => producto.Nombre.Contains(request.Query));
+            }
+
+            if (!string.IsNullOrEmpty(request.OrderBy))
+            {
+                query = query.OrderBy(request.OrderBy);
+            }
+
+            int page = request.Page ?? 1;
+            int pageSize = request.PageSize ?? 10;
+
+            var count = await query.CountAsync();
+
+            var dtos = query
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .Select(producto => (object)new DTOProducto
+                {
+                    Id = producto.Id,
+                    Nombre = producto.Nombre,
+                    Precio = producto.Precio,
+                    Cantidad = producto.Cantidad,
+                    Descripcion = producto.Descripcion,
+                    Imagen = producto.Imagen,
+                    IdCategoria = (int)producto.Categoria.Id
+                })
+                .ToList();
+            int pageCount = (count / pageSize) + (count % pageSize > 0 ? 1 : 0);
+
+            return Ok(new ListResponse
+            {
+                HasNextPage = (page + 1) <= pageCount,
+                HasPrevPage = page > 1,
+                List = dtos,
+                NextPage = (page + 1) <= pageCount ? page + 1 : page,
+                Page = page,
+                PageSize = pageSize,
+                PrevPage = page > 1 ? page - 1 : 1,
+                TotalCount = count,
+                TotalPage = pageCount
+            });
         }
 
         //Metodo GET para obtener un producto por su ID
