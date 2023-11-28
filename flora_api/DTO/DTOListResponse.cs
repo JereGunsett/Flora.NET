@@ -1,6 +1,6 @@
 ﻿namespace api_flora.DTO
 {
-    public class ListResponse
+    public class DTOListResponse
     {
         public int Page { get; set; }
 

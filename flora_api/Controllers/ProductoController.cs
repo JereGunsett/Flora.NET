@@ -5,8 +5,6 @@ using api_flora.DTO;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using System.Threading.Tasks;
 using System.Linq.Dynamic.Core;
 
 
@@ -27,9 +25,10 @@ namespace api_flora.Controllers
         }
 
         //Metodo GET para obtener todos los productos
-        [HttpGet]
-        public async Task<ActionResult<List<DTOProducto>>> Get([FromQuery] DTOListRequest request)
+        [HttpGet("type/{id}")]
+        public async Task<ActionResult<List<DTOProducto>>> Get([FromRoute] long id, [FromQuery] DTOListRequest request)
         {
+
             var query = this.dataContext.Productos.AsQueryable();
 
             if (!string.IsNullOrEmpty(request.Query))
@@ -61,9 +60,9 @@ namespace api_flora.Controllers
                     IdCategoria = (int)producto.Categoria.Id
                 })
                 .ToList();
-            int pageCount = (count / pageSize) + (count % pageSize > 0 ? 1 : 0);
+            int pageCount = (count / pageSize) + 1;
 
-            return Ok(new ListResponse
+            return Ok(new DTOListResponse
             {
                 HasNextPage = (page + 1) <= pageCount,
                 HasPrevPage = page > 1,
