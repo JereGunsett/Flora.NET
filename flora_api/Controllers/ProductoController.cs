@@ -29,60 +29,71 @@ namespace api_flora.Controllers
         public async Task<ActionResult<List<DTOProducto>>> Get([FromRoute] long id, [FromQuery] DTOListRequest request)
         {
 
-            var query = this.dataContext.Productos.AsQueryable();
-
-            if (!string.IsNullOrEmpty(request.OrderBy))
+            try
             {
-                // Verificar que el nombre de la propiedad existe en DTOProducto
-                if (typeof(DTOProducto).GetProperty(request.OrderBy) != null)
+                Console.WriteLine($"Página solicitada: {request.Page}, Tamaño de página: {request.PageSize}");
+
+                var query = this.dataContext.Productos.AsQueryable();
+
+                if (!string.IsNullOrEmpty(request.OrderBy))
+                {
+                    // Verificar que el nombre de la propiedad existe en DTOProducto
+                    if (typeof(DTOProducto).GetProperty(request.OrderBy) != null)
+                    {
+                        query = query.OrderBy(request.OrderBy);
+                    }
+                    else
+                    {
+                        // Manejar el caso en que el nombre de la propiedad no existe
+                        return BadRequest("Invalid property name for sorting");
+                    }
+                }
+
+                if (!string.IsNullOrEmpty(request.OrderBy))
                 {
                     query = query.OrderBy(request.OrderBy);
                 }
-                else
+
+                int page = request.Page ?? 1;
+                int pageSize = request.PageSize ?? 4;
+
+                var count = await this.dataContext.Productos.CountAsync();
+
+                var dtos = await query
+                    .Skip((page - 1) * pageSize)
+                    .Take(pageSize)
+                    .Select(producto => new DTOProducto
+                    {
+                        Id = producto.Id,
+                        Nombre = producto.Nombre,
+                        Precio = producto.Precio,
+                        Cantidad = producto.Cantidad,
+                        Descripcion = producto.Descripcion,
+                        Imagen = producto.Imagen,
+                        IdCategoria = (int)producto.Categoria.Id
+                    })
+                    .Cast<object>() // Agregamos Cast<object>() para convertir la lista a List<object>
+                    .ToListAsync();
+                int pageCount = (count / pageSize) + 1;
+
+                return Ok(new DTOListResponse
                 {
-                    // Manejar el caso en que el nombre de la propiedad no existe
-                    return BadRequest("Invalid property name for sorting");
-                }
+                    HasNextPage = (page + 1) <= pageCount,
+                    HasPrevPage = page > 1,
+                    List = dtos,
+                    NextPage = (page + 1) <= pageCount ? page + 1 : page,
+                    Page = page,
+                    PageSize = pageSize,
+                    PrevPage = page > 1 ? page - 1 : 1,
+                    TotalCount = count,
+                    TotalPage = pageCount
+                });
             }
-
-            if (!string.IsNullOrEmpty(request.OrderBy))
+            catch (Exception ex)
             {
-                query = query.OrderBy(request.OrderBy);
+                Console.Error.WriteLine($"Error en la obtención de productos: {ex.Message}");
+                return BadRequest("Ocurrió un problema al obtener los productos");
             }
-
-            int page = request.Page ?? 1;
-            int pageSize = request.PageSize ?? 10;
-
-            var count = await query.CountAsync();
-
-            var dtos = query
-                .Skip((page - 1) * pageSize)
-                .Take(pageSize)
-                .Select(producto => (object)new DTOProducto
-                {
-                    Id = producto.Id,
-                    Nombre = producto.Nombre,
-                    Precio = producto.Precio,
-                    Cantidad = producto.Cantidad,
-                    Descripcion = producto.Descripcion,
-                    Imagen = producto.Imagen,
-                    IdCategoria = (int)producto.Categoria.Id
-                })
-                .ToList();
-            int pageCount = (count / pageSize) + 1;
-
-            return Ok(new DTOListResponse
-            {
-                HasNextPage = (page + 1) <= pageCount,
-                HasPrevPage = page > 1,
-                List = dtos,
-                NextPage = (page + 1) <= pageCount ? page + 1 : page,
-                Page = page,
-                PageSize = pageSize,
-                PrevPage = page > 1 ? page - 1 : 1,
-                TotalCount = count,
-                TotalPage = pageCount
-            });
         }
 
         //Metodo GET para obtener un producto por su ID
