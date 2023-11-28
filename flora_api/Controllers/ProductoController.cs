@@ -31,9 +31,18 @@ namespace api_flora.Controllers
 
             var query = this.dataContext.Productos.AsQueryable();
 
-            if (!string.IsNullOrEmpty(request.Query))
+            if (!string.IsNullOrEmpty(request.OrderBy))
             {
-                query = query.Where(producto => producto.Nombre.Contains(request.Query));
+                // Verificar que el nombre de la propiedad existe en DTOProducto
+                if (typeof(DTOProducto).GetProperty(request.OrderBy) != null)
+                {
+                    query = query.OrderBy(request.OrderBy);
+                }
+                else
+                {
+                    // Manejar el caso en que el nombre de la propiedad no existe
+                    return BadRequest("Invalid property name for sorting");
+                }
             }
 
             if (!string.IsNullOrEmpty(request.OrderBy))
