@@ -55,7 +55,7 @@ namespace api_flora.Controllers
                 }
 
                 int page = request.Page ?? 1;
-                int pageSize = request.PageSize ?? 4;
+                int pageSize = request.PageSize ?? 100;
 
                 var count = await this.dataContext.Productos.CountAsync();
 
@@ -112,45 +112,64 @@ namespace api_flora.Controllers
         [HttpPost]
         public async Task<ActionResult<Producto>> Post([FromBody] Producto producto)
         {
-            await this.dataContext.Productos.AddAsync(producto); //Agrega el producto al contexto de la base de datos
-            await this.dataContext.SaveChangesAsync(); //Guarda los cambios en la base de datos
-            
-            return Ok(producto); //Retorna el producto agregado
+            try
+            {
+                Console.WriteLine("Valores de los parámetros para la inserción:");
+
+                Console.WriteLine($"Cantidad: {producto.Cantidad}");
+                Console.WriteLine($"CategoriaId: {producto.Categoria}");
+                Console.WriteLine($"Descripcion: {producto.Descripcion}");
+                Console.WriteLine($"Imagen: {producto.Imagen}");
+                Console.WriteLine($"Nombre: {producto.Nombre}");
+                Console.WriteLine($"Precio: {producto.Precio}");
+
+                await this.dataContext.Productos.AddAsync(producto);
+                await this.dataContext.SaveChangesAsync();
+
+                return Ok(producto);
+            }
+            catch (Exception ex)
+            {
+                Console.Error.WriteLine($"Error al crear el producto: {ex.Message}");
+                return BadRequest($"Error al crear el producto: {ex.Message}");
+            }
         }
 
         //M�todo PUT para actualizar un producto existente por su ID
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put(long id, Producto producto)
+        public async Task<IActionResult> Put(long id, DTOProducto productoDTO)
         {
-            //Verifica si el ID del producto coincide con el ID proporcionado
-            if (id != producto.Id)
+            if (id != productoDTO.Id)
             {
-                //Si los ID no coinciden, devuelve un reslutado BadRequest
                 return BadRequest();
             }
 
-            //Busca dde manera asicronica un producto existente por su ID en el contexto de la base de datos
             var existingProduct = await this.dataContext.Productos.FindAsync(id);
-            //Si no se encuentra ning�n producto con el ID proporcionado, devuelve un resultado NotFound
+
             if (existingProduct == null)
             {
                 return NotFound();
             }
 
-            //Actualiza las propiedades del producto existente con las propiedades del producto recibido
-            existingProduct.Nombre = producto.Nombre;
-            existingProduct.Precio = producto.Precio;
-            existingProduct.Cantidad = producto.Cantidad;
-            existingProduct.Descripcion = producto.Descripcion;
-            existingProduct.Categoria = producto.Categoria;
-            existingProduct.Imagen = producto.Imagen;
-            
-            //Marca el producto existente como modificado en el contexto de la base de datos
+            existingProduct.Nombre = productoDTO.Nombre;
+            existingProduct.Precio = productoDTO.Precio;
+            existingProduct.Cantidad = productoDTO.Cantidad;
+            existingProduct.Descripcion = productoDTO.Descripcion;
+            existingProduct.Imagen = productoDTO.Imagen;
+
+            // Buscar la categoría por su ID en la base de datos
+            var categoria = await this.dataContext.Categorias.FindAsync(productoDTO.IdCategoria);
+            if (categoria == null)
+            {
+                return NotFound("La categoría no existe");
+            }
+
+            // Asignar la categoría al producto
+            existingProduct.Categoria = categoria;
+
             this.dataContext.Productos.Update(existingProduct);
-            //Guarda los cambios asincr�nicamente en la base de datos
             await this.dataContext.SaveChangesAsync();
 
-            //Retorna un resultado sin contenido si la actualizacion se realizo correctamente
             return NoContent();
         }
 
