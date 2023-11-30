@@ -40,12 +40,19 @@ namespace api_flora.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<Noticia>> Post([FromBody] Noticia noticia)
+        public async Task<ActionResult<Noticia>> CrearNoticia([FromBody] Noticia noticia)
         {
-            await this.dataContext.Noticias.AddAsync(noticia);
-            await this.dataContext.SaveChangesAsync();
-            
-            return Ok(noticia);
+            try
+            {
+                await this.dataContext.Noticias.AddAsync(noticia);
+                await this.dataContext.SaveChangesAsync();
+
+                return CreatedAtAction(nameof(Get), new { id = noticia.Id }, noticia);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"Error al crear la noticia: {ex.Message}");
+            }
         }
 
         [HttpPut("{id}")]

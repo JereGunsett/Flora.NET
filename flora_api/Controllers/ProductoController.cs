@@ -114,14 +114,10 @@ namespace api_flora.Controllers
         {
             try
             {
-                Console.WriteLine("Valores de los parámetros para la inserción:");
+                // Accede al cuerpo de la solicitud
+                var requestBody = await new StreamReader(Request.Body).ReadToEndAsync();
+                Console.WriteLine($"Cuerpo de la solicitud POST: {requestBody}");
 
-                Console.WriteLine($"Cantidad: {producto.Cantidad}");
-                Console.WriteLine($"CategoriaId: {producto.Categoria}");
-                Console.WriteLine($"Descripcion: {producto.Descripcion}");
-                Console.WriteLine($"Imagen: {producto.Imagen}");
-                Console.WriteLine($"Nombre: {producto.Nombre}");
-                Console.WriteLine($"Precio: {producto.Precio}");
 
                 await this.dataContext.Productos.AddAsync(producto);
                 await this.dataContext.SaveChangesAsync();

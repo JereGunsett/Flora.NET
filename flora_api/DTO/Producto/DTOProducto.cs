@@ -16,6 +16,6 @@ namespace api_flora.DTO.Producto
 
         public string Imagen { get; set; } = "";
 
-        public int IdCategoria {  get; set; } = 0; 
+        public long IdCategoria {  get; set; } = 0; 
     }
 }
